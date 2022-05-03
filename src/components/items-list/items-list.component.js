@@ -34,9 +34,9 @@ const Item = (props) => {
       <td>
         {props.item.greeting}
       </td>
-      <td>
+      {/* <td>
         <Link to={'/item/' + item._id}>Edit</Link>
-      </td>
+      </td> */}
       <td>
         <button onClick={() => deleteItem()}>Remove</button>
       </td>
@@ -63,7 +63,7 @@ function ItemsList(props) {
             <th>Avatar</th>
             <th>Name</th>
             <th>Greeting</th>
-            <th>Edit</th>
+            {/* <th>Edit</th> */}
             <th>Delete</th>
           </tr>
         </thead>
