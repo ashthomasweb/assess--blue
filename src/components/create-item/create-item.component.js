@@ -9,14 +9,14 @@ function CreateItem() {
   } = useContext(MainContext)
 
   // controlled input elements
-  function changeDescription(e) {
+  function changeName(e) {
     tempItem.name = e.target.value
-    dispatch({ type: 'ONCHANGE_DESC', payload: tempItem })
+    dispatch({ type: 'ONCHANGE_NAME', payload: tempItem })
   }
 
-  function changeComment(e) {
+  function changeGreeting(e) {
     tempItem.greeting = e.target.value
-    dispatch({ type: 'ONCHANGE_COMMENT', payload: tempItem })
+    dispatch({ type: 'ONCHANGE_GREETING', payload: tempItem })
   }
 
   function changeFile(e) {
@@ -31,8 +31,6 @@ function CreateItem() {
   // data handling
   function onSubmit(e) {
     e.preventDefault()
-    console.log()
-    // send form data to server 'create' route
     const url = 'http://localhost:4000/upload'
     const formData = new FormData()
     let formNames = ['upload', 'name', 'greeting']
@@ -40,23 +38,28 @@ function CreateItem() {
     for (let i = 0; i < formNames.length; i++) {
       formData.append(formNames[i], nameTarget[i])
     }
-
     const config = {
       headers: {
         'content-type': 'multipart/form-data',
       },
     }
     post(url, formData, config).then((res) => {
-      console.log(res.data)
       dispatch({ type: 'SET_ALL_ITEMS', payload: res.data })
     })
-
-    dispatch({ type: 'CLEAR_ITEM' })
   }
 
   function runNameAPI() {
     console.log('hi')
     axios.get('http://localhost:4000/mern3/api/greetings/').then((res) => {
+      alert(JSON.stringify(res.data))
+    })
+  }
+
+  function setNameAPI() {
+    console.log('hi')
+    let name = tempItem.name
+    let greeting = tempItem.greeting
+    axios.get(`http://localhost:4000/mern3/api/setUser/${name}/${greeting}`).then((res) => {
       alert(JSON.stringify(res.data))
     })
   }
@@ -73,7 +76,7 @@ function CreateItem() {
             name='name'
             className='form-control'
             value={tempItem.name}
-            onChange={changeDescription}
+            onChange={changeName}
           />
         </div>
 
@@ -84,7 +87,7 @@ function CreateItem() {
             name='greeting'
             className='form-control'
             value={tempItem.greeting}
-            onChange={changeComment}
+            onChange={changeGreeting}
           />
         </div>
 
@@ -93,14 +96,27 @@ function CreateItem() {
             type='submit'
             value='Create User'
             className='btn btn-primary'
-          />
-          <br />
-          <input type='file' name='upload' onChange={changeFile} />
+            />
+          <input type='file' style={{margin: '0 0 0 10px'}} name='upload' onChange={changeFile} />
+            <p>Use blue button and above fields to set an image, name, and greeting.</p>
         </div>
-        <br />
+        <hr/>
+
+        <p><strong>Use buttons below to call the API routes directly. Use above fields for input.</strong></p>
+        <p>Call the API to get my name. It retrieves the first in the list, so please don't delete the entry.</p>
+        <p>Route: 'http://localhost:4000/mern3/api/greetings/</p>
 
         <button type='button' onClick={() => runNameAPI()}>
-          Call Name API
+          Call Name via API
+        </button>
+        <br />
+        <hr/>
+        <br />
+        <p>Call the API to set a name and optional greeting. Requires refresh.</p>
+        <p>Route: 'http://localhost:4000/mern3/api/setUser/USER-NAME-HERE/OPTIONAL-GREETING</p>
+
+        <button type='button' onClick={() => setNameAPI()}>
+          Set Name via API
         </button>
       </form>
     </div>

@@ -1,10 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-// Schema is 'Collection' level category in MongoDB
-// key: object-value pairs define non-relational records
-// within that category
-
 let Item = new Schema({
     name: {
         type: String

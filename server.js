@@ -8,16 +8,13 @@ const multer = require('multer')
 const {GridFsStorage} = require('multer-gridfs-storage')
 const Grid = require('gridfs-stream')
 const itemRoutes = express.Router()
-const { default: axios } = require('axios')
 app.use(cors())
 app.use(bodyParser.json())
 
 const mongoURI = "mongodb+srv://ashleyth:1473Pinkship!@cluster0.yjkct.mongodb.net/testDatabase?retryWrites=true&w=majority"
 let port = process.env.PORT || 4000
-let imgKey = process.env.UNSPLASH_API_KEY
 let Item = require('./src/models/item.model')
 let gfs
-
 
 mongoose.connect(mongoURI, { useNewUrlParser: true })
 const connection = mongoose.connection
@@ -44,8 +41,6 @@ let imageStorageObj = new GridFsStorage({
 })
 let upload = multer({ imageStorageObj })
 
-
-
 function resAllWithMessage(message, res) {
   Item.find({}, (error, items) => {
     if (error) {
@@ -57,9 +52,6 @@ function resAllWithMessage(message, res) {
 }
 
 app.post("/upload", upload.single("upload"), (req,res)=>{
-  console.log(req.body)
-  console.log(req.file)
-  
   let { name, greeting } = req.body
   let item = new Item()
   item.name = name
@@ -69,10 +61,8 @@ app.post("/upload", upload.single("upload"), (req,res)=>{
   .save()
   .then(() => resAllWithMessage('Added!', res))
   .catch((error) => {
-      // res.json({file:req.file})
       res.status(400).send('Adding new item failed')
     })
- 
 })
 
 itemRoutes.route('/api/greetings/').get(function (req, res) {
@@ -90,18 +80,14 @@ itemRoutes.route('/api/setUser/:userName/:optionalGreeting').get(function (req, 
   let name = req.params.userName
   let greeting = req.params.optionalGreeting
   let item = new Item()
-
   item.name = name
   item.greeting = greeting
-
   item.save()
-  .then(() => resAllWithMessage('Updated!', res))
+  .then(() => res.json({message: 'Updated!'}))
   .catch((error) => {
-    res.status(400).send('Update not possible')
+    res.status(400).send('API call failed')
   })
 })
-
-
 
 itemRoutes.route('/').get(function (req, res) {
   console.log('home route')
@@ -128,27 +114,9 @@ itemRoutes.route('/update/:id').post(function (req, res) {
     item.save()
       .then(() => resAllWithMessage('Updated!', res))
       .catch((error) => {
-        res.status(400).send('Update not possible')
+        res.status(400).send('Update failed')
       })
   })
-})
-
-itemRoutes.route('/add').post(function (req, res) {
-  console.log(req.body)
-  // const { description, comment, rating, imageURL, photographer, file } = req.body
-  // let item = new Item()
-  // item.description = description
-  // item.comment = comment
-  // item.rating = rating
-  // item.imageURL = imageURL
-  // item.photographer = photographer
-  // item.file = {...req.body.file}
-  // item
-  //   .save()
-  //   .then(() => resAllWithMessage('Added!', res))
-  //   .catch((error) => {
-  //     res.status(400).send('Adding new item failed')
-  //   })
 })
 
 itemRoutes.route('/delete/:id').post(function (req, res) {
@@ -156,13 +124,12 @@ itemRoutes.route('/delete/:id').post(function (req, res) {
   Item.deleteOne({ _id })
     .then(() => resAllWithMessage('Deleted!', res))
     .catch((error) => {
-      res.status(400).send('Deleting new item failed')
+      res.status(400).send('Deleting user failed')
     })
 })
 
 app.use('/mern3', itemRoutes)
 
-// Listener compatible with Heroku, Localhost
 app.listen(port, () => console.log(`Server accessible at port ${port}.`))
 
 // END of document

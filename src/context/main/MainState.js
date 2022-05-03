@@ -5,7 +5,6 @@ export const MainContext = createContext()
 
 const MainState = (props) => {
   const initialState = {
-    user: 'Ash',
     items: [],
     tempItem: {
       name: '',

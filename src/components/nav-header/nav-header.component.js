@@ -5,14 +5,8 @@ function NavHeader() {
   return (
     <div className='container'>
       <nav className='navbar navbar-expand-lg navbar-light bg-light'>
-        <Link to='/' className='navbar-brand'>MERN-Stack Image Saver</Link>
-        <div className='collpase navbar-collapse'>
-          <ul className='navbar-nav mr-auto'>
-            <li className='navbar-item'>
-              <Link to='/' className='nav-link'>Create Item</Link>
-            </li>
-          </ul>
-        </div>
+        <Link to='/' className='navbar-brand'>MERN-Stack User Saver and API</Link>
+       
       </nav>
       <br />
     </div>
